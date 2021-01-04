@@ -1,0 +1,4 @@
+config.py
+pixivconfig.py
+__pycache__/
+*.log

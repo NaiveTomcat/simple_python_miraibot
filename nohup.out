@@ -1,0 +1,10 @@
+{'type': 'GroupMessage', 'messageChain': [{'type': 'Source', 'id': 1059, 'time': 1609310227}, {'type': 'Plain', 'text': '来张图'}], 'sender': {'id': 1204521668, 'memberName': '贝儿', 'permission': 'MEMBER', 'group': {'id': 942494342, 'name': '秋名山少戒班', 'permission': 'MEMBER'}}}
+{'code': 0, 'session': '1WehT8gx'}
+auth success
+verify success
+lolicon success
+https://i.pixiv.cat/img-original/img/2020/02/21/05/52/46/79608856_p0.jpg
+{"sessionKey": "1WehT8gx", "target": 942494342, "messageChain": [{"type": "Plain", "text": "\u4f60\u8981\u7684\u56fe"}, {"type": "Image", "path": "temp.jpg"}]}
+{'code': 0, 'msg': 'success', 'messageId': 1060}
+Sent success
+{'type': 'GroupMessage', 'messageChain': [{'type': 'Source', 'id': 849, 'time': 1609310231}, {'type': 'Face', 'faceId': 177, 'name': '喷血'}], 'sender': {'id': 2452973529, 'memberName': 'uebian', 'permission': 'ADMINISTRATOR', 'group': {'id': 730148253, 'name': '机器人测试群', 'permission': 'MEMBER'}}}
