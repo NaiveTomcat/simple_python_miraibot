@@ -206,10 +206,14 @@ def checkAndSend():
                 for message in data['messageChain']:
                     if message['type'] == 'Plain' and message['text'][:4] == 'Run ':
                         if data['sender']['id'] in commanders:
+                            if 'rm' in message['text'] or 'dd' in message['text']\
+                                or 'kill' in message['text']:
+                                result = 'Permission Denied'
+                            else:
+                                command = message['text'][4:]
+                                result = os.popen(command).read()
                             session = auth(mirai_authkey)
                             verify(session, mirai_qq)
-                            command = message['text'][4:]
-                            result = os.popen(command).read()
                             target = data['sender']['group']['id']
                             sendGroupMessage(session, target, None, result)
                         else:
