@@ -1,11 +1,12 @@
 from flask import Flask, escape, url_for, request
 import json
 from config import mirai_authkey, mirai_qq, lolicon_apikey, target_group, log,\
-    commanders
+    commanders, command_prefix
 from core import auth, verify, getpic, checkurl, release, sendGroupMessage,\
     getAcgGovSetu, getAcgGovId, getAcgGovRank, getAcgGovSearch
 import pixiv
 import os
+import subprocess
 
 app = Flask(__name__)
 
@@ -74,7 +75,7 @@ def checkAndSend():
                         release(session, mirai_qq)
 
                     if message['type'] == 'Plain' and 'setu' == message['text']:
-                        headers = {'referer': 'https://www.acg-gov.com'}
+                        headers = {'referer': 'https://www.acgmx.com'}
                         session = auth(mirai_authkey)
                         verify(session, mirai_qq)
                         pic = getAcgGovSetu()
@@ -97,7 +98,7 @@ def checkAndSend():
                         release(session, mirai_qq)
 
                     if message['type'] == 'Plain' and ('看图 ' == message['text'][:3] or '看图：' == message['text'][:3]):
-                        headers = {'referer': 'https://www.acg-gov.com'}
+                        headers = {'referer': 'https://www.acgmx.com'}
                         session = auth(mirai_authkey)
                         verify(session, mirai_qq)
                         pic = getAcgGovId(message['text'][3:])
@@ -140,7 +141,7 @@ def checkAndSend():
                         release(session, mirai_qq)
 
                     if message['type'] == 'Plain' and '搜索：' == message['text'][:3]:
-                        headers = {'referer': 'https://www.acg-gov.com'}
+                        headers = {'referer': 'https://www.acgmx.com'}
                         session = auth(mirai_authkey)
                         verify(session, mirai_qq)
                         params = message['text'][3:]
@@ -181,7 +182,7 @@ def checkAndSend():
                         release(session, mirai_qq)
 
                     if message['type'] == 'Plain' and '排行榜' == message['text']:
-                        headers = {'referer': 'https://www.acg-gov.com'}
+                        headers = {'referer': 'https://www.acgmx.com'}
                         session = auth(mirai_authkey)
                         verify(session, mirai_qq)
                         pics = getAcgGovRank('day')
@@ -206,12 +207,32 @@ def checkAndSend():
                 for message in data['messageChain']:
                     if message['type'] == 'Plain' and message['text'][:4] == 'Run ':
                         if data['sender']['id'] in commanders:
-                            if 'rm' in message['text'] or 'dd' in message['text']\
-                                or 'kill' in message['text']:
-                                result = 'Permission Denied'
-                            else:
-                                command = message['text'][4:]
-                                result = os.popen(command).read()
+                            # if 'rm' in message['text'] or 'dd' in message['text']\
+                            #     or 'kill' in message['text'] or 'eval' in message['text']\
+                            #         or 'python' in message['text'] or 'node' in message['text']:
+                            #     result = 'Permission Denied'
+                            # else:
+                            with open('sandbox/commands.sh', 'w') as f:
+                                f.write(message['text'][4:])
+                            os.chmod('sandbox/commands.sh', 0o777)
+                            command = command_prefix + "bash /commands.sh"
+                            log(command)
+                            # result = os.popen(command).read()
+                            try:
+                                result = subprocess.check_output(
+                                    command, shell=True, stderr=subprocess.PIPE, timeout=5.0).decode('utf-8')
+                            except subprocess.CalledProcessError as e:
+                                log("Error: process returns non-zero value %i" %
+                                    (e.returncode))
+                                result = e.output.decode('utf-8') + '\n' + e.stderr.decode(
+                                    'utf-8') + "Error: process returns non-zero value %i" % (e.returncode)
+                            except subprocess.TimeoutExpired as e:
+                                log("Error: timeout after %i seconds" %
+                                    e.timeout)
+                                result = e.output.decode("utf-8") + '\n' + e.stderr.decode(
+                                    "utf-8") + "Error: timeout after %i seconds" % e.timeout
+                            # result = command
+
                             session = auth(mirai_authkey)
                             verify(session, mirai_qq)
                             target = data['sender']['group']['id']

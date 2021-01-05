@@ -10,8 +10,8 @@ from config import *
 
 
 def getAcgGovSearch(query,offset=None):
-    headers = {'token': AcgGov_token, 'referer': 'https://www.acg-gov.com'}
-    url = 'https://api.acg-gov.com/public/search?%s' % urllib.parse.urlencode({'q': query})
+    headers = {'token': AcgGov_token, 'referer': 'https://www.acgmx.com'}
+    url = 'https://api.acgmx.com/public/search?%s' % urllib.parse.urlencode({'q': query})
 
     if offset is not None:
         url += '&offset=%i' % offset
@@ -21,16 +21,16 @@ def getAcgGovSearch(query,offset=None):
 
 
 def getAcgGovSetu():
-    headers = {'token': AcgGov_token, 'referer': 'https://www.acg-gov.com'}
-    url = 'https://api.acg-gov.com/public/setu'
+    headers = {'token': AcgGov_token, 'referer': 'https://www.acgmx.com'}
+    url = 'https://api.acgmx.com/public/setu'
     r = requests.get(url, headers=headers)
     return r.json()['data']
 
 
 def getAcgGovRank(mode='day'):
-    headers = {'token': AcgGov_token, 'referer': 'https://www.acg-gov.com'}
+    headers = {'token': AcgGov_token, 'referer': 'https://www.acgmx.com'}
     date = time.strftime("%Y-%m-%d", time.localtime(time.time()-60*60*24))
-    url = 'https://api.acg-gov.com/illusts/ranking?mode=' + mode +'&date=' + date
+    url = 'https://api.acgmx.com/illusts/ranking?mode=' + mode +'&date=' + date
     r = requests.get(url, headers=headers)
     # log(r.json())
     return r.json()['illusts']
@@ -38,8 +38,8 @@ def getAcgGovRank(mode='day'):
 
 def getAcgGovId(id='12345'):
     headers = {'authorization': AcgGov_token,'token': AcgGov_token,
-               'referer': 'https://www.acg-gov.com'}
-    url = 'https://api.acg-gov.com/illusts/detail?illustId='+id+'&reduction=true'
+               'referer': 'https://www.acgmx.com'}
+    url = 'https://api.acgmx.com/illusts/detail?illustId='+id+'&reduction=true'
     r = requests.get(url, headers=headers)
     log(r.json())
     return r.json()['data']['illust']
@@ -147,7 +147,7 @@ def sendGroupMessage(sessionKey, target, picurl, text='图来了', headers=None)
             log('Sent success')
         else:
             log('Failed to send')
-            log(r.content)
+            log(r.json())
         if picpath is not None:
             os.remove(picpath)
     finally:
